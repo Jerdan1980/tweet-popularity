@@ -17,8 +17,10 @@ lexicon = []
 tweets = []
 retweets = []
 likes = []
+data = []
 
 #https://realpython.com/python-csv/
+#import csv
 with open('tweets.csv', encoding='utf-8') as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	linecount = 0
@@ -27,33 +29,41 @@ with open('tweets.csv', encoding='utf-8') as csv_file:
 		if len(row) < 3:
 			continue
 
-		#text, retweets, likes
-		tweets.append(row[0])
-		retweets.append(row[1])
-		likes.append(row[2])
+		#save it
+		data.append(row)
 
 		#add tweet's dictionary to lexicon
+		#it doesnt matter what order they get added so its fine here
 		lexicon += list(word_tokenize(row[0]))
 		
 		linecount += 1
-	print(f'Processed {linecount} tweets')
+	print(f'Imported {linecount} tweets')
 
-# remove dupes
+# remove dupes from lexicon
 lemmatizer = WordNetLemmatizer()
 lexicon = [lemmatizer.lemmatize(i) for i in lexicon]
 print(f'Lexicon has {len(lexicon)} words')
+
+#shuffle data now so i dont have to do it later
+random.shuffle(data)
+
+#split the data up
+for d in data:
+	tweets.append(d[0])
+	retweets.append(d[1])
+	likes.append(d[2])
+#delete data to make space
+data = None
+print(f'Shuffled {len(tweets)} tweets')
 
 #sentdex dictionary
 sentdexdict = modifiedsentdex(lexicon)
 print(f'Sentdex dictionary has {len(sentdexdict)} words')
 
 #simple dictionary
-featureset = createMatrix(tweets, sentdexdict)
+featureset = createMatrix(tweets, lexicon)
 print("Finished simple dictionary model")
 
-#shuffle
-#random.shuffle(featureset)
-#cant figure out slice notation so I am not gonna try shuffling yet
 #convert to numpy
 featureset = np.array(featureset)
 #divide data, 90% goes to training
