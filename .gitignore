@@ -132,3 +132,5 @@ dmypy.json
 tokens.json
 Stuff.docx
 tweets.csv
+.vscode
+~$Stuff.docx
