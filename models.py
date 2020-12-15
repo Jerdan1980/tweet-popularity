@@ -10,15 +10,24 @@ from nltk.stem import WordNetLemmatizer
 from numba import jit  # for SPEEDUP
 
 
-def generateNGram(lexicon):
+def generateNGram(tweets, lexicon):
     n = 3
     train_data, padded_sents = padded_everygram_pipeline(n, lexicon)
     model = MLE(n)
     model.fit(train_data, padded_sents)
-    featureset = []
+    ngramdict = []
     for i in lexicon:
-        featureset.append(model.counts[i])
-
+        ngramdict.append(model.counts[i])
+    featureset = []
+    lemmatizer = WordNetLemmatizer()
+    for t in tweets:
+        words = word_tokenize(t)
+        words = [lemmatizer.lemmatize(i) for i in words]
+        features = np.zeros(len(lexicon))
+        for w in words:
+            if w in ngramdict:
+                features[lexicon.index(w)] += 1
+        featureset.append(list(features))
     return featureset
 
 
@@ -26,20 +35,20 @@ def generateNGram(lexicon):
 def createMatrix(tweets, lexicon):
     lemmatizer = WordNetLemmatizer()
     featureset = []
-		#go one tweet at a time
+    # go one tweet at a time
     for t in tweets:
-				#lemmatize tweet
+        # lemmatize tweet
         words = word_tokenize(t)
         words = [lemmatizer.lemmatize(i) for i in words]
-				#empty row
+        # empty row
         features = np.zeros(len(lexicon))
-				#cycle through tweets, if you find the word in the dictionary
-				#increment the corresponding column
-				#that way you get the frequency row
+        # cycle through tweets, if you find the word in the dictionary
+        # increment the corresponding column
+        # that way you get the frequency row
         for w in words:
             if w in lexicon:
                 features[lexicon.index(w)] += 1
-				#append to frequency matrix
+            # append to frequency matrix
         featureset.append(list(features))
     return featureset
 
