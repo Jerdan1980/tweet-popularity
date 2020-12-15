@@ -55,7 +55,7 @@ print(f'Shuffled {len(tweets)} tweets')
 # print(f'Sentdex dictionary has {len(sentdexdict)} words')
 
 # n-gram dictionary
-ngramdict = generateNGram(lexicon)
+ngramdict = generateNGram(tweets)
 print("Finished n-gram dictionary")
 
 # simple dictionary

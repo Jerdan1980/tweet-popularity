@@ -26,14 +26,20 @@ def generateNGram(lexicon):
 def createMatrix(tweets, lexicon):
     lemmatizer = WordNetLemmatizer()
     featureset = []
+		#go one tweet at a time
     for t in tweets:
+				#lemmatize tweet
         words = word_tokenize(t)
         words = [lemmatizer.lemmatize(i) for i in words]
+				#empty row
         features = np.zeros(len(lexicon))
+				#cycle through tweets, if you find the word in the dictionary
+				#increment the corresponding column
+				#that way you get the frequency row
         for w in words:
             if w in lexicon:
                 features[lexicon.index(w)] += 1
-        # create augmented matrix of words and the retweets, since that seems to work better
+				#append to frequency matrix
         featureset.append(list(features))
     return featureset
 
