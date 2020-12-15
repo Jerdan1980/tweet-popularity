@@ -11,7 +11,7 @@ from numba import jit  # for SPEEDUP
 
 
 def generateNGram(tweets, lexicon):
-    n = 3
+    n = 4
     train_data, padded_sents = padded_everygram_pipeline(n, lexicon)
     model = MLE(n)
     model.fit(train_data, padded_sents)

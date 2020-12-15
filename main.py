@@ -2,6 +2,7 @@ from models import *
 import csv
 import random
 import nltk
+import sparse #sparse matrices
 
 # import custom file
 from models import *
@@ -15,7 +16,7 @@ data = []
 
 # https://realpython.com/python-csv/
 # import csv
-with open('tweets.csv', encoding='utf-8') as csv_file:
+with open('corona.csv', encoding='utf-8') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     linecount = 0
     for row in csv_reader:
@@ -55,15 +56,15 @@ print(f'Shuffled {len(tweets)} tweets')
 # print(f'Sentdex dictionary has {len(sentdexdict)} words')
 
 # n-gram dictionary
-ngramdict = generateNGram(tweets, lexicon)
+featureset = generateNGram(tweets, lexicon)
 print("Finished n-gram dictionary")
 
 # simple dictionary
-# featureset = createMatrix(tweets, lexicon)
-# print("Finished simple dictionary model")
+#featureset = createMatrix(tweets, lexicon)
+#print("Finished simple dictionary model")
 
 # convert to numpy
-featureset = np.array(ngramdict)
+featureset = np.array(featureset)
 # divide data, 90% goes to training
 train_size = int(.9 * len(featureset))
 endMarker = len(lexicon) - 1
