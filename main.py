@@ -61,7 +61,7 @@ sentdexdict = modifiedsentdex(lexicon)
 print(f'Sentdex dictionary has {len(sentdexdict)} words')
 
 #simple dictionary
-featureset = createMatrix(tweets, lexicon)
+featureset = createMatrix(tweets, sentdexdict)
 print("Finished simple dictionary model")
 
 #convert to numpy
@@ -81,8 +81,8 @@ print("Finished partitioning data")
 
 (rtWeights, likeWeights) = solve(trainMatrix, trainRetweets, trainLikes)
 
-#test one tweet out
-print(f'Estimated retweets: {testMatrix[:][1] @ rtWeights}')
-print(f'Actual Retweets: {testRetweets[1]}')
-print(f'Estimated retweets: {testMatrix[:][1] @ likeWeights}')
-print(f'Actual Retweets: {testLikes[1]}')
+#calculate the errors
+(rtErr, likeErr) = loss(testMatrix, testRetweets, testLikes, rtWeights, likeWeights)
+print(f'Testing on {len(testRetweets)} tweets:')
+print(f'\tRetweet error: {rtErr}')
+print(f'\tLike error: {likeErr}')

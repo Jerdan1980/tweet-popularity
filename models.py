@@ -35,13 +35,14 @@ def modifiedsentdex(lexicon):
 	
 	#find the upper and lower quartiles
 	lowerQuartile = np.percentile(counts, 25)
-	upperQuartile = np.percentile(counts, 75)
-	print(f'Cutoffs: {lowerQuartile}, {upperQuartile}')
+	upperQuartile = np.percentile(counts, 90)
+	print(f'\tCutoffs: {lowerQuartile}, {upperQuartile}')
+	print(f'\tMax: {np.amax(counts)}')
 
 	trunc_list = []
 	for w in w_counts:
 		#remove anything not in the middle 50%
-		if 10 > w_counts[w] > 5:
+		if upperQuartile >= w_counts[w] >= lowerQuartile:
 			trunc_list.append(w)
 	return trunc_list
 
@@ -54,3 +55,20 @@ def solve(M, RTs, Likes):
 	rtWeights = np.linalg.lstsq(M, RTs, rcond=None)[0]
 	likeWeights = np.linalg.lstsq(M, Likes, rcond=None)[0]
 	return (rtWeights, likeWeights)
+
+#@jit
+def loss(M, RTs, Likes, rtWeights, likeWeights):
+	#set initial counts to zero
+	rtErr = 0
+	likeErr = 0
+
+	#summ error squared
+	for i in range(0, len(RTs)):
+		rtErr += np.abs((M[:][i] @ rtWeights) - RTs[i])
+		likeErr += np.abs((M[:][i] @ likeWeights) - Likes[i])
+	
+	#divide by n
+	rtErr = rtErr / len(RTs)
+	likeErr = likeErr / len(Likes)
+
+	return (rtErr, likeErr)
