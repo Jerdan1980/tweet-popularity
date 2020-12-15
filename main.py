@@ -2,7 +2,6 @@ from models import *
 import csv
 import random
 import nltk
-import sparse #sparse matrices
 
 # import custom file
 from models import *
@@ -52,16 +51,16 @@ data = None
 print(f'Shuffled {len(tweets)} tweets')
 
 # sentdex dictionary
-# sentdexdict = modifiedsentdex(lexicon)
-# print(f'Sentdex dictionary has {len(sentdexdict)} words')
+sentdexdict = modifiedsentdex(lexicon)
+print(f'Sentdex dictionary has {len(sentdexdict)} words')
 
 # n-gram dictionary
-featureset = generateNGram(tweets, lexicon)
-print("Finished n-gram dictionary")
+#featureset = generateNGram(tweets, lexicon)
+#print("Finished n-gram dictionary")
 
 # simple dictionary
-#featureset = createMatrix(tweets, lexicon)
-#print("Finished simple dictionary model")
+featureset = createMatrix(tweets, sentdexdict)
+print("Finished simple dictionary model")
 
 # convert to numpy
 featureset = np.array(featureset)
